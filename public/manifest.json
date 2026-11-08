@@ -17,5 +17,5 @@
   "background": { "service_worker": "background.js", "type": "module" },
   "permissions": ["activeTab"],
   "host_permissions": ["https://github.com/*", "https://raw.githubusercontent.com/*"],
-  "externally_connectable": { "matches": ["https://graphcal.org/*", "http://localhost/*"] }
+  "externally_connectable": { "matches": ["https://view.graphcal.org/*"] }
 }

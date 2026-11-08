@@ -1,12 +1,12 @@
 # Graphcal for GitHub
 
-A Chrome extension that lets the [Graphcal viewer](https://graphcal.org/view/) read GitHub repositories with the browser's own GitHub sign-in. No token to create or paste: a repository you can open on github.com, you can open in the viewer, private ones included.
+A Chrome extension that lets the [Graphcal viewer](https://view.graphcal.org/) read GitHub repositories with the browser's own GitHub sign-in. No token to create or paste: a repository you can open on github.com, you can open in the viewer, private ones included.
 
 It also adds a toolbar button. On a `.gcl` file's page on github.com, pressing it opens that file in the viewer.
 
 ## How it works
 
-The viewer at graphcal.org keeps no data and talks to no server of its own. With the extension installed, every read of a repository goes through the extension (`externally_connectable` messaging), and the extension fetches github.com with the session cookies, the same way a GitHub page does. The sources are evaluated in the viewer's own tab, in WebAssembly, and never leave the browser.
+The viewer at view.graphcal.org keeps no data and talks to no server of its own. With the extension installed, every read of a repository goes through the extension (`externally_connectable` messaging), and the extension fetches github.com with the session cookies, the same way a GitHub page does. The sources are evaluated in the viewer's own tab, in WebAssembly, and never leave the browser.
 
 The addresses read, all on github.com:
 
@@ -24,7 +24,7 @@ Permissions: `activeTab` (the page URL when the button is pressed) and host perm
 
 ## Protocol
 
-The viewer sends one message per request to the extension's id, `{ v: 1, method, ...fields }`, and gets `{ ok: true, value }` or `{ ok: false, kind, message }` back. The methods are `hello`, `repo`, `commit`, `tree`, `read`, `changed` and `refs`; `src/protocol.ts` defines and validates them. Only pages on the origins the manifest lists (`graphcal.org`, and `localhost` for development) can send them.
+The viewer sends one message per request to the extension's id, `{ v: 1, method, ...fields }`, and gets `{ ok: true, value }` or `{ ok: false, kind, message }` back. The methods are `hello`, `repo`, `commit`, `tree`, `read`, `changed` and `refs`; `src/protocol.ts` defines and validates them. Only the viewer's own top-level page can send them: the manifest lists only `https://view.graphcal.org/*`, and the worker checks each message's sender again (`src/sender.ts`: that origin, the top-level frame, an active document). A development build (`pnpm run build:dev`) also answers `http://localhost` on any port, for a local dev server of the viewer; it is never uploaded, and `scripts/store-zip.mjs` refuses it.
 
 The extension's id is fixed by the `key` in `public/manifest.json`, so an unpacked build has the same id as the published one and the viewer needs no configuration.
 
@@ -40,13 +40,14 @@ The extension's id is fixed by the `key` in `public/manifest.json`, so an unpack
 ```sh
 pnpm install
 pnpm run build        # typecheck, then dist/
+pnpm run build:dev    # the same, also answering http://localhost (never upload it)
 pnpm run icons        # public/icons from icons.svg (needs rsvg-convert)
 pnpm exec vp test
 pnpm exec vp lint
 pnpm run zip          # chrome-graphcal.zip for the Web Store
 ```
 
-Load `dist/` as an unpacked extension at `chrome://extensions` (Developer mode → Load unpacked). Then open `https://graphcal.org/view/#owner/repo/path.gcl`, or press the button on a `.gcl` file's GitHub page.
+Load `dist/` as an unpacked extension at `chrome://extensions` (Developer mode → Load unpacked). Then open `https://view.graphcal.org/#owner/repo/path.gcl`, or press the button on a `.gcl` file's GitHub page.
 
 To check the worker's reads by hand, open the extension's service worker console from `chrome://extensions` and send yourself a request:
 

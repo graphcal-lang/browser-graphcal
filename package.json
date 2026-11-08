@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc && vp build",
+    "build:dev": "tsc && vp build --mode development",
     "icons": "node scripts/icons.mjs",
     "zip": "pnpm run build && cd dist && zip -r ../chrome-graphcal.zip .",
     "zip:store": "pnpm run build && node scripts/store-zip.mjs"

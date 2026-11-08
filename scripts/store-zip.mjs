@@ -21,6 +21,10 @@ const stage = mkdtempSync(join(tmpdir(), "chrome-graphcal-"));
 try {
   cpSync(dist, stage, { recursive: true });
   const manifest = JSON.parse(readFileSync(join(stage, "manifest.json"), "utf8"));
+  // Only the viewer's own origin may ask the published extension.
+  const matches = manifest.externally_connectable?.matches ?? [];
+  if (JSON.stringify(matches) !== JSON.stringify(["https://view.graphcal.org/*"]))
+    throw new Error(`not a production build: externally_connectable matches ${matches}`);
   delete manifest.key;
   writeFileSync(join(stage, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
   const key = process.env.GRAPHCAL_EXTENSION_KEY;

@@ -1,10 +1,12 @@
-// The extension's one worker. It answers the viewer at graphcal.org (requests
-// come through `externally_connectable`, from the origins the manifest
-// lists) by reading github.com with the browser's sign-in, and it opens the
-// viewer for the GitHub file page the toolbar button is pressed on.
+// The extension's one worker. It answers the viewer at view.graphcal.org
+// (requests come through `externally_connectable`, from the origins the
+// manifest lists, and only from the viewer's top-level page: `acceptsSender`)
+// by reading github.com with the browser's sign-in, and it opens the viewer
+// for the GitHub file page the toolbar button is pressed on.
 import { GitHubSession, ReadError } from "./github.ts";
 import { parseRequest, type Answer, type Request } from "./protocol.ts";
 import { pageOf, pickEntry, splitRef, VIEWER, viewerUrl, type GitHubPage } from "./route.ts";
+import { acceptsSender } from "./sender.ts";
 
 const session = new GitHubSession();
 
@@ -40,7 +42,15 @@ async function handle(message: unknown): Promise<Answer> {
   }
 }
 
-chrome.runtime.onMessageExternal.addListener((message: unknown, _sender, sendResponse) => {
+chrome.runtime.onMessageExternal.addListener((message: unknown, sender, sendResponse) => {
+  if (!acceptsSender(sender, __GRAPHCAL_BUILD__)) {
+    sendResponse({
+      ok: false,
+      kind: "other",
+      message: "the extension answers only the Graphcal viewer's own page",
+    } satisfies Answer);
+    return false;
+  }
   void handle(message).then(sendResponse);
   // The answer comes later.
   return true;

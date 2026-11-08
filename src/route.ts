@@ -1,5 +1,5 @@
 // The viewer address for a GitHub page. A `.gcl` file's page becomes
-// `https://graphcal.org/view/#owner/repo@ref/path`. A repository page (its
+// `https://view.graphcal.org/#owner/repo@ref/path`. A repository page (its
 // root, or a `tree/` folder) opens one of its `.gcl` files, chosen by
 // `pickEntry`; the viewer's explorer then lists the rest. Any other page
 // opens the viewer's start page.
@@ -9,7 +9,7 @@
 // caller passes the branch names it knows and the longest that fits wins;
 // without them the first segment is the ref.
 
-export const VIEWER = "https://graphcal.org/view/";
+export const VIEWER = "https://view.graphcal.org/";
 
 export type GitHubPage =
   /** `/owner/repo/blob/<ref and path>`. */
