@@ -1,4 +1,4 @@
-// What the viewer at graphcal.org asks the extension, and what the extension
+// What the viewer at view.graphcal.org asks the extension, and what the extension
 // answers. The viewer sends one request per message to the extension's id;
 // every answer is an `Answer`. Requests are validated here, field by field,
 // because they come from a web page: an owner, a repository, a ref, a commit

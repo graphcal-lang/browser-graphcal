@@ -55,9 +55,9 @@ test("the entry for a folder is its shallowest .gcl, first by name", () => {
 
 test("the viewer address encodes the ref and the path, and leaves the default branch unnamed", () => {
   expect(viewerUrl("o", "r", "feat/x", "src/a.gcl")).toBe(
-    "https://graphcal.org/view/#o/r@feat%2Fx/src/a.gcl",
+    "https://view.graphcal.org/#o/r@feat%2Fx/src/a.gcl",
   );
   expect(viewerUrl("o", "r", null, "a b/c#d.gcl")).toBe(
-    "https://graphcal.org/view/#o/r/a%20b/c%23d.gcl",
+    "https://view.graphcal.org/#o/r/a%20b/c%23d.gcl",
   );
 });
